@@ -1,0 +1,45 @@
+- name: create black-goat user
+  user:
+    name: black-goat
+    groups: webapps
+    state: present
+  become: yes
+- name: create project directory
+  file:
+    path: /var/opt/wsgi/black-goat
+    state: directory
+    owner: black-goat
+    group: webapps
+  become: yes
+- name: create app subdirectories
+  file:
+    path: /var/opt/wsgi/black-goat/{{ item }}
+    state: directory
+    mode: "u=rwx,g=rwx,o=rx"
+    owner: black-goat
+    group: webapps
+  become: yes
+  with_items:
+    - run
+    - bin
+    - logs
+    - static
+- name: allow nginx to read/write
+  command: chcon -Rt httpd_sys_content_t /var/opt/wsgi/black-goat
+  become: yes
+- name: write secret environment variables
+  template:
+    src: env_secrets.j2
+    dest: /var/opt/wsgi/black-goat/env_secrets
+    owner: black-goat
+    group: webapps
+    mode: "u=rwx,g=,o="
+  become: yes
+- name: create celery worker log file
+  file:
+    path: /var/opt/wsgi/black-goat/logs/celery-worker.log
+    state: touch
+    owner: black-goat
+    group: webapps
+    mode: "u=rw,g=rw,o=r"
+  become: yes

@@ -1,0 +1,18 @@
+- name: populate static files
+  shell: source /var/opt/wsgi/black-goat/env_secrets && /var/opt/wsgi/black-goat/env/bin/python manage.py collectstatic --no-input
+  args:
+    chdir: /var/opt/wsgi/black-goat/black-goat
+  become: yes
+  become_user: black-goat
+- name: migrate database
+  shell: source /var/opt/wsgi/black-goat/env_secrets && /var/opt/wsgi/black-goat/env/bin/python manage.py migrate
+  args:
+    chdir: /var/opt/wsgi/black-goat/black-goat
+  become: yes
+  become_user: black-goat
+- name: create superuser in black-goat
+  shell: source /var/opt/wsgi/black-goat/env_secrets && echo "from django.contrib.auth.models import User; User.objects.filter(email='{{ django_admin_email}}').delete(); User.objects.create_superuser('{{ django_admin_user }}', '{{ django_admin_email }}', '{{ django_admin_password }}')" | /var/opt/wsgi/black-goat/env/bin/python manage.py shell
+  args:
+    chdir: /var/opt/wsgi/black-goat/black-goat
+  become: yes
+  become_user: black-goat

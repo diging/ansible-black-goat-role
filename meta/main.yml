@@ -1,0 +1,7 @@
+---
+dependencies:
+  - { role: ansible-nginx-role }
+  - { role: ansible-postgresql-role }
+  - { role: ansible-python-role }
+  - { role: ansible-supervisor-role }
+  - { role: ansible-redis-role }
