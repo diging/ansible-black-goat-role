@@ -37,3 +37,6 @@
 - name: restart black-goat gunicorn process
   command: supervisorctl restart black-goat
   become: yes
+- name: restart black-goat celery process
+  command: supervisorctl restart black-goat-celery
+  become: yes
