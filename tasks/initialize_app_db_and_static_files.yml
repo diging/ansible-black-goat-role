@@ -16,3 +16,4 @@
     chdir: /var/opt/wsgi/black-goat/black-goat
   become: yes
   become_user: black-goat
+  no_log: true
